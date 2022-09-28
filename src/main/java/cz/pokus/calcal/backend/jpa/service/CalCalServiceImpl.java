@@ -1,5 +1,6 @@
 package cz.pokus.calcal.backend.jpa.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -47,8 +48,21 @@ public class CalCalServiceImpl implements CalCalService {
     }
 
     @Override
-    public List<Measurement> MeasurementFindAll() {
+    public List<Measurement> findAll() {
         return mRepo.findAll();
+    }
+
+    @Override
+    public Measurement save(Measurement m) {
+        if (m.getId() == null) {
+            m.setCreated(new Date());
+        }
+        return mRepo.save(m);
+    }
+
+    @Override
+    public List<Measurement> findByNameEquals(String name) {
+        return mRepo.findByNameEquals(name);
     }
 
 }

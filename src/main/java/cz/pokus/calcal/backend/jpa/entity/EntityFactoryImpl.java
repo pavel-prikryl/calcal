@@ -13,13 +13,13 @@ public class EntityFactoryImpl implements EntityFactory {
         Measurement ret = new Measurement();
         ret.setName("sample");
         ret.setMale(false);
-        ret.setBirthYear(1984);
-        ret.setHeight(165);
-        ret.setWeight(55);
+        ret.setBirthYear(1993);
+        ret.setHeight(170);
+        ret.setWeight(80);
         ret.setTargetWeight(ret.getWeight()-5);
-        ret.setActivity(BodyActivity.MEDIUM);
-        ret.setTargetBody(BodyTarget.REDUCE);
-        ret.setFat(30);
+        ret.setActivity(BodyActivity.SITTING);
+        ret.setTargetBody(BodyTarget.FIT);
+        ret.setFat(20);
         
         return ret;
     }

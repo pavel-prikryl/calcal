@@ -1,4 +1,4 @@
-package cz.pokus.calcal.frontend.view;
+package cz.pokus.calcal.frontend.component;
 
 import java.util.Arrays;
 
@@ -6,15 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.BeanValidationBinder;
+import com.vaadin.data.ValidationException;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.AbstractSingleSelect;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.Slider;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 
 import cz.pokus.calcal.backend.converter.DoubleToIntegerConverter;
@@ -28,12 +31,14 @@ public class MeasurementEditor extends FormLayout {
 
     private Logger logger = LoggerFactory.getLogger(MeasurementEditor.class);
 
-    private static final String W = "400px";
+    private static final String W = "350px";
 
+    private Measurement bean;
+    private Callback<Measurement> callback;
+    
     private BeanValidationBinder<Measurement> binder;
 
-    private TextField name;
-
+    private RadioButtonGroup<Boolean> male;
     private Slider birthYear;
     private Slider weight;
     private Slider height;
@@ -43,10 +48,41 @@ public class MeasurementEditor extends FormLayout {
     private ComboBox<BodyActivity> activity;
     private ComboBox<BodyTarget> targetBody;
 
-    public MeasurementEditor(Measurement model) {
+    public MeasurementEditor(Measurement bean) {
         super();
-        prepareGui();
-        binder = createBinder(model);
+        this.bean = bean;
+        buildGui();
+        binder = createBinder(bean);
+    }
+
+    public Measurement getBean() {
+        return bean;
+    }
+    
+    
+    
+    public void setBean(Measurement bean) {
+        this.bean = bean;
+        binder.readBean(bean);
+    }
+
+    public void onInputValueChange() {        
+        if(callback!=null) {
+            try {
+                binder.writeBean(bean);
+            } catch (ValidationException e) {
+                Notification.show("Chyba validace: "+e.getMessage(), Notification.Type.ERROR_MESSAGE);
+            }
+            callback.onCallback(bean);
+        }
+    }
+    
+    public Callback<Measurement> getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback<Measurement> callback) {
+        this.callback = callback;
     }
 
     @Override
@@ -55,24 +91,39 @@ public class MeasurementEditor extends FormLayout {
             AbstractField f = (AbstractField) c;
             f.addValueChangeListener(e -> {
                 logger.info("value changed: " + e.getValue().toString());
+                onInputValueChange();
             });
-        } else if(c instanceof ComboBox) {
-            ComboBox cbx = (ComboBox)c;
+        } else if (c instanceof ComboBox) {
+            ComboBox cbx = (ComboBox) c;
             cbx.addValueChangeListener(e -> {
                 logger.info("value changed: " + e.getValue().toString());
+                onInputValueChange();
             });
-        } else if(c instanceof AbstractSingleSelect) {
-            AbstractSingleSelect a = (AbstractSingleSelect)c;
+        } else if (c instanceof AbstractSingleSelect) {
+            AbstractSingleSelect a = (AbstractSingleSelect) c;
             a.addValueChangeListener(e -> {
                 logger.info("value changed: " + e.getValue().toString());
+                onInputValueChange();
             });
         }
         super.addComponent(c);
     }
 
-    private void prepareGui() {
-        name = new TextField("Název");
-        this.addComponent(name);
+    private void buildGui() {
+        male = new RadioButtonGroup<>("Pohlaví", Arrays.asList(Boolean.FALSE, Boolean.TRUE));
+        male.setItemCaptionGenerator(new ItemCaptionGenerator<Boolean>() {
+            @Override
+            public String apply(Boolean item) {
+                return item ? "Mužské" : "Ženské";
+            }
+        });
+        male.addValueChangeListener(e -> {
+            male.setCaption("Pohlaví " + (e.getValue() ? "Mužské" : "Ženské"));
+        });
+        male.setStyleName("horizontal");
+        male.setWidth(W);
+        this.addComponent(male);
+
 
         birthYear = new Slider("Rok narození", 1923, 2022);
         addSlider(birthYear, "");
@@ -82,10 +133,10 @@ public class MeasurementEditor extends FormLayout {
         addSlider(height, "cm");
         targetWeight = new Slider("Cílová váha", 20, 250);
         addSlider(targetWeight, "Kg");
-        
+
         fat = new RadioButtonGroup<>("Tělesný tuk", Measurement.FAT_VALUES);
         fat.addValueChangeListener(e -> {
-           fat.setCaption("Tělesný tuk "+e.getValue()+" %"); 
+            fat.setCaption("Tělesný tuk " + e.getValue() + " %");
         });
         fat.setStyleName("horizontal");
         fat.setWidth(W);
@@ -102,7 +153,7 @@ public class MeasurementEditor extends FormLayout {
         activity.setWidth(W);
         activity.addStyleName(ValoTheme.COMBOBOX_ALIGN_CENTER);
         this.addComponent(activity);
-        
+
         targetBody = new ComboBox<>("Cíl", Arrays.asList(BodyTarget.values()));
         targetBody.setItemCaptionGenerator(new ItemCaptionGenerator<BodyTarget>() {
             @Override
@@ -117,11 +168,12 @@ public class MeasurementEditor extends FormLayout {
 
     }
 
-    private BeanValidationBinder<Measurement> createBinder(Measurement model) {
+    private BeanValidationBinder<Measurement> createBinder(Measurement bean) {
         BeanValidationBinder<Measurement> ret = new BeanValidationBinder<>(Measurement.class);
 
         // ret.forField(height).withConverter(new StringToIntegerConverter("Please enter
         // a number")).bind("height");
+        ret.bind(male, "male");
         ret.forField(birthYear).withConverter(new DoubleToIntegerConverter()).bind("birthYear");
         ret.forField(weight).withConverter(new DoubleToIntegerConverter()).bind("weight");
         ret.forField(height).withConverter(new DoubleToIntegerConverter()).bind("height");
@@ -129,9 +181,8 @@ public class MeasurementEditor extends FormLayout {
         ret.bind(fat, "fat");
         ret.bind(activity, "activity");
         ret.bind(targetBody, "targetBody");
-        ret.bind(name, "name");
 
-        ret.readBean(model);
+        ret.readBean(bean);
         return ret;
     }
 

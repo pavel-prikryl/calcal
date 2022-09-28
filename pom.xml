@@ -122,12 +122,6 @@
             </properties>
         </profile>
         <profile>
-            <id>mysql</id>
-            <properties>
-                <activatedProperties>mysql</activatedProperties>
-            </properties>
-        </profile>
-        <profile>
             <id>pg</id>
             <properties>
                 <activatedProperties>pg</activatedProperties>

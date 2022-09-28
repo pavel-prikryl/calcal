@@ -3,7 +3,9 @@ package cz.pokus.calcal.backend.jpa.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +30,26 @@ public class Measurement implements Serializable {
     private static final long serialVersionUID = -6793004223116087652L;
 
     public static final List<Integer> FAT_VALUES = Arrays.asList(5, 15, 20, 30, 40);
+
+    public Measurement() {
+    }
+
+    public Measurement(Measurement m) {
+        this.id = m.id;
+        this.created = m.created;
+        this.name = m.name;
+        this.male = m.male;
+        this.birthYear = m.birthYear;
+        this.weight = m.weight;
+        this.height = m.height;
+        this.targetWeight = m.targetWeight;
+        this.fat = m.fat;
+        this.activity = m.activity;
+        this.targetBody = m.targetBody;
+        this.bmi = m.bmi;
+        this.basal = m.basal;
+        this.intake = m.intake;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -115,6 +137,10 @@ public class Measurement implements Serializable {
     public boolean isMale() {
         return male;
     }
+    
+    public String getSex() {
+        return male ? "M" : "F";
+    }
 
     public void setMale(boolean male) {
         this.male = male;
@@ -124,6 +150,12 @@ public class Measurement implements Serializable {
         return birthYear;
     }
 
+    public Integer getAge() {
+        Calendar cal = GregorianCalendar.getInstance();
+        int y = cal.get(Calendar.YEAR);
+        return y - birthYear; 
+    }
+    
     public void setBirthYear(Integer birthYear) {
         this.birthYear = birthYear;
     }
@@ -138,6 +170,10 @@ public class Measurement implements Serializable {
 
     public Integer getHeight() {
         return height;
+    }
+    
+    public double getHeightMeters() {
+        return (double)height / 100d;
     }
 
     public void setHeight(Integer height) {
