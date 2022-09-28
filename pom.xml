@@ -31,6 +31,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
@@ -113,18 +118,18 @@
         -Plocal -Dspring.profiles.active=local -->
     <profiles>
         <profile>
-            <id>local</id>
+            <id>mysql</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <activatedProperties>local</activatedProperties>
+                <activatedProperties>mysql</activatedProperties>
             </properties>
         </profile>
         <profile>
-            <id>pg</id>
+            <id>h2</id>
             <properties>
-                <activatedProperties>pg</activatedProperties>
+                <activatedProperties>h2</activatedProperties>
             </properties>
         </profile>
     </profiles>
