@@ -14,6 +14,13 @@ package cz.pokus.calcal.backend.jpa.enums;
             
             1,725
             Pokud sportujete každý den, nebo 6 krát do týdne, máte velmi náročné zaměstnání, nebo vykonáváte každý den velmi náročnou fyzickou aktivitu
+            
+https://bruxy.regnet.cz/web/fitness/CZ/vypocet-bazalniho-metabolismu/
+1,2 Sedavá  Žádné cvičení, sedavé zaměstnání    
+1,375   Nízká   Lehké cvičení nebo sport, 1 až 3× v týdnu   
+1,55    Mírná   Středně náročné cvičení nebo sport 3 až 5× v týdnu  
+1,725   Vysoká  Těžké cvičení nebo sport 6 až 7× v týdnu    
+1,9 Extrémní    Velmi těžké cvičení a fyzicky náročné zaměstnání            
 
  */
 
@@ -25,7 +32,7 @@ public enum BodyActivity {
     HIGH(4, "Aktivní (Pohyb 3x týdně)", 1.55),
     ABOVE_HIGH(5, "Nadprůměrně aktivní (Pohyb 4x týdně)", 1.6), 
     VERY(6, "Velmi aktivní (Pohyb 5x týdně)",  1.725),
-    EXTREME(7, "Velmi aktivní (Pohyb 6x týdně)", 1.730);
+    EXTREME(7, "Velmi aktivní (Pohyb 6x týdně)", 1.9);
 
     private final Integer code;
     private final String desc;

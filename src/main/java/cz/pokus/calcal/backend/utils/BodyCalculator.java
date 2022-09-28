@@ -1,13 +1,14 @@
 package cz.pokus.calcal.backend.utils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.pokus.calcal.backend.jpa.entity.Measurement;
 import cz.pokus.calcal.backend.jpa.enums.BodyTarget;
-import cz.pokus.calcal.frontend.view.CalcView;
 
 public class BodyCalculator {
     private static Logger logger = LoggerFactory.getLogger(BodyCalculator.class);
@@ -72,26 +73,39 @@ public class BodyCalculator {
             return ret;
         }
     }
-
+    //370 + (21,6 · w · (1 − f/100)
     public static double calcBasalWithFat(Measurement data) {
-        return 370 + 21.6 * (1 - (data.getFat() / 100)) * data.getWeight();
+        //return 370 + 21.6 * (1 - (data.getFat() / 100)) * data.getWeight();
+        
+        double ret = 370d + (21.6d * data.getWeight() * (1d - (data.getFat() / 100d)));
+        logger.info("fat=" + data.getFat() + ", weight=" + data.getWeight() + " --> ret=" + ret);
+        return ret;
     }
 
     public static double calcBasal(Measurement data) {
         if (data.isMale()) {
-            double ret = 10 * data.getWeight() + 6.25 * data.getHeight() - 5 * data.getAge() + 5;
+            double ret = 10d * data.getWeight() + 6.25d * data.getHeight() - 5d * data.getAge() + 5d;
             return ret;
         } else {
-            double ret = 10 * data.getWeight() + 6.25 * data.getHeight() - 5 * data.getAge() - 161;
+            double ret = 10d * data.getWeight() + 6.25d * data.getHeight() - 5d * data.getAge() - 161d;
             return ret;
         }
     }
 
     public static double calcBasalAverage(Measurement data) {
-        double d1 = calcBasalWithFat(data);
-        double d2 = calcBasal(data);
-        double d3 = calcBasalOld(data);
-        return (d1 + d2 + d3) / 3;
+        List<Double> list = new ArrayList<>();
+        
+        list.add(calcBasal(data));
+        list.add(calcBasalWithFat(data));
+        //list.add(calcBasalOld(data));
+        
+        double sum = 0;
+        for(Double item:list) {
+            sum += item;
+        }
+
+        return sum / list.size();
+    
     }
 
     public static BigDecimal calcBmi(Measurement data) {
