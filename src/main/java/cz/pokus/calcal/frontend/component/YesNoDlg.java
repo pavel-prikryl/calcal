@@ -1,7 +1,5 @@
 package cz.pokus.calcal.frontend.component;
 
-import java.util.logging.Logger;
-
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -14,7 +12,6 @@ import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
 public class YesNoDlg extends Window {
-    private final transient Logger LOG = Logger.getLogger(getClass().getSimpleName());
 
     public YesNoDlg(final String msg, final DlgResponse response) {
         this(null, msg, response);
@@ -112,7 +109,6 @@ public class YesNoDlg extends Window {
         }
         // obcasny problem u downloadu, kde je navazano tlacitko Yes na
         // FileDownloader
-        // pekna prasarna :-)
 
         // [A]
         // ale zda se, ze je to OK ?

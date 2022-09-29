@@ -120,15 +120,15 @@
     <profiles>
         <profile>
             <id>mysql</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <activatedProperties>mysql</activatedProperties>
             </properties>
         </profile>
         <profile>
             <id>h2</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <activatedProperties>h2</activatedProperties>
             </properties>
@@ -184,6 +184,7 @@
                             <goal>update-widgetset</goal>
                             <goal>compile-theme</goal>
                             -->
+                            <goal>clean</goal>
                             <goal>compile</goal>
                         </goals>
                     </execution>

@@ -18,12 +18,15 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import cz.pokus.calcal.backend.jpa.entity.Measurement;
 import cz.pokus.calcal.backend.jpa.service.CalCalService;
 import cz.pokus.calcal.backend.utils.BodyCalculator;
 
 public class MeasurementResult extends VerticalLayout {
+    private static final long serialVersionUID = 6888989127237236966L;
+
     private Logger logger = LoggerFactory.getLogger(MeasurementResult.class);
 
     private final CalCalService ccService;
@@ -41,12 +44,16 @@ public class MeasurementResult extends VerticalLayout {
 
     public MeasurementResult(CalCalService ccService) {
         super();
+        this.setStyleName(ValoTheme.LAYOUT_WELL);
         this.ccService = ccService;
         this.setCaption("Vypočítané hodnoty");
 
         basal = new Label();
+        basal.setContentMode(com.vaadin.shared.ui.ContentMode.HTML);
         bmi = new Label();
+        bmi.setContentMode(com.vaadin.shared.ui.ContentMode.HTML);
         intake = new Label();
+        intake.setContentMode(com.vaadin.shared.ui.ContentMode.HTML);
 
         GridLayout grid = new GridLayout(2, 3);
         grid.setSpacing(true);
@@ -63,7 +70,7 @@ public class MeasurementResult extends VerticalLayout {
         this.addComponent(grid);
 
         Component saveControls = buildSaveControls();
-        this.addComponent(new Hr());
+        this.addComponent(new Spacer());
         this.addComponent(saveControls);
 
     }
@@ -114,7 +121,8 @@ public class MeasurementResult extends VerticalLayout {
         }
         if(idOverwrite!=null) {
             final Integer idNew = idOverwrite;
-            String msg = "Záznam se jménem <b>"+bean.getName()+ "</b> již existuje. Přejete si ho přepsat ?";
+            String msg = "Záznam se jménem "+bean.getName()+ " již existuje. Přejete si ho přepsat ?";
+            Notification.show(msg, Notification.Type.TRAY_NOTIFICATION);
             YesNoDlg dlg = new YesNoDlg(msg, new YesNoDlg.DlgResponse() {
                 @Override
                 public void response(boolean b) {
@@ -148,9 +156,9 @@ public class MeasurementResult extends VerticalLayout {
     public void setMeasurement(Measurement bean) {
         this.bean = bean;
 
-        String sBasal = bean.getBasal() + " KCAL (" + (int)BodyCalculator.kcalToKj( bean.getBasal()) + " KJ)";
-        String sBmi = bean.getBmi() + " - "+BodyCalculator.getBmiCaption(bean.getBmi().doubleValue());        
-        String sIntake = bean.getIntake() + " KCAL (" + (int)BodyCalculator.kcalToKj(bean.getIntake()) + " KJ)";
+        String sBasal = "<b>" + bean.getBasal() + " KCAL (" + (int)BodyCalculator.kcalToKj( bean.getBasal()) + " KJ)" + "</b>";
+        String sBmi = "<b>" + bean.getBmi() + " - "+BodyCalculator.getBmiCaption(bean.getBmi().doubleValue()) + "</b>";        
+        String sIntake = "<b>" + bean.getIntake() + " KCAL (" + (int)BodyCalculator.kcalToKj(bean.getIntake()) + " KJ)" + "</b>";
         
         basal.setValue(sBasal);
         bmi.setValue(sBmi);

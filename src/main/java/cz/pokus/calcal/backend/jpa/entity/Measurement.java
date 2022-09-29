@@ -51,6 +51,19 @@ public class Measurement implements Serializable {
         this.intake = m.intake;
     }
 
+    public BodyTarget computeBodyTarget() {
+        BodyTarget ret = BodyTarget.FIT;
+        if (targetWeight == null || weight == null) {
+            return ret;
+        }
+        if (targetWeight > weight) {
+            ret = BodyTarget.GROW;
+        } else if (targetWeight < weight) {
+            ret = BodyTarget.REDUCE;
+        }
+        return ret;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
@@ -137,7 +150,7 @@ public class Measurement implements Serializable {
     public boolean isMale() {
         return male;
     }
-    
+
     public String getSex() {
         return male ? "M" : "F";
     }
@@ -153,9 +166,9 @@ public class Measurement implements Serializable {
     public Integer getAge() {
         Calendar cal = GregorianCalendar.getInstance();
         int y = cal.get(Calendar.YEAR);
-        return y - birthYear; 
+        return y - birthYear;
     }
-    
+
     public void setBirthYear(Integer birthYear) {
         this.birthYear = birthYear;
     }
@@ -171,9 +184,9 @@ public class Measurement implements Serializable {
     public Integer getHeight() {
         return height;
     }
-    
+
     public double getHeightMeters() {
-        return (double)height / 100d;
+        return (double) height / 100d;
     }
 
     public void setHeight(Integer height) {
@@ -198,6 +211,13 @@ public class Measurement implements Serializable {
 
     public BodyActivity getActivity() {
         return activity;
+    }
+
+    public String getActivityWithLevel() {
+        if (activity == null) {
+            return null;
+        }
+        return activity.getDescShort();
     }
 
     public void setActivity(BodyActivity activity) {

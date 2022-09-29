@@ -104,7 +104,12 @@ public class CalcView extends CustomComponent implements View {
         meaResult.setOnSaveCallback(new Callback<Measurement>() {
             @Override
             public void onCallback(Measurement param) {
-                meaEditor.setBean(entityFactory.getDefaultMeasurement());
+                //reset na vychozi hodnoty - matouci pro uzivatele
+                //meaEditor.setBean(entityFactory.getDefaultMeasurement());
+                Measurement beanCopy = new Measurement(param);
+                beanCopy.setId(null);
+                beanCopy.setName(null);
+                meaEditor.setBean(beanCopy);
             }
         });
         twoParts.addComponent(meaEditor);
@@ -135,7 +140,7 @@ public class CalcView extends CustomComponent implements View {
         root.addComponent(new Hr());
         
         dataGrid =  new Grid<>(Measurement.class);
-        dataGrid.setColumns("id", "name", "sex", "birthYear", "weight", "height", "targetWeight", "fat", "activity", "targetBody", "bmi", "basal", "intake");
+        dataGrid.setColumns("id", "name", "sex", "birthYear", "weight", "height", "targetWeight", "fat", "activityWithLevel", "targetBody", "bmi", "basal", "intake");
         dataGrid.setItems(ccService.findAll());
         dataGrid.setSizeFull();
         root.addComponent(dataGrid);

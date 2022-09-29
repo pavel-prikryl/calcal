@@ -35,7 +35,7 @@ public class MeasurementEditor extends FormLayout {
 
     private Measurement bean;
     private Callback<Measurement> callback;
-    
+
     private BeanValidationBinder<Measurement> binder;
 
     private RadioButtonGroup<Boolean> male;
@@ -58,25 +58,28 @@ public class MeasurementEditor extends FormLayout {
     public Measurement getBean() {
         return bean;
     }
-    
-    
-    
+
     public void setBean(Measurement bean) {
         this.bean = bean;
         binder.readBean(bean);
     }
 
-    public void onInputValueChange() {        
-        if(callback!=null) {
+    public void onInputValueChange() {
+        if (callback != null) {
             try {
                 binder.writeBean(bean);
+                BodyTarget bTarget = bean.computeBodyTarget();
+                if(bTarget != bean.getTargetBody()) {
+                    bean.setTargetBody(bTarget);
+                    targetBody.setValue(bTarget);
+                }
             } catch (ValidationException e) {
-                Notification.show("Chyba validace: "+e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                Notification.show("Chyba validace: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
             }
             callback.onCallback(bean);
         }
     }
-    
+
     public Callback<Measurement> getCallback() {
         return callback;
     }
@@ -124,7 +127,6 @@ public class MeasurementEditor extends FormLayout {
         male.setWidth(W);
         this.addComponent(male);
 
-
         birthYear = new Slider("Rok narození", 1923, 2022);
         addSlider(birthYear, "");
         weight = new Slider("Váha", 20, 250);
@@ -164,6 +166,7 @@ public class MeasurementEditor extends FormLayout {
         targetBody.setEmptySelectionAllowed(false);
         targetBody.setWidth(W);
         targetBody.addStyleName(ValoTheme.COMBOBOX_ALIGN_CENTER);
+        targetBody.setReadOnly(true);
         this.addComponent(targetBody);
 
     }

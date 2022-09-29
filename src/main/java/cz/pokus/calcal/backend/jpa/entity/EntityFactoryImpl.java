@@ -16,7 +16,7 @@ public class EntityFactoryImpl implements EntityFactory {
         ret.setBirthYear(1993);
         ret.setHeight(170);
         ret.setWeight(80);
-        ret.setTargetWeight(ret.getWeight()-5);
+        ret.setTargetWeight(ret.getWeight());
         ret.setActivity(BodyActivity.SITTING);
         ret.setTargetBody(BodyTarget.FIT);
         ret.setFat(20);
