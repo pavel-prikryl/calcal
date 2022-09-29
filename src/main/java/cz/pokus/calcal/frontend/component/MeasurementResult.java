@@ -5,6 +5,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.server.AbstractErrorMessage.ContentMode;
+import com.vaadin.server.ErrorMessage.ErrorLevel;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -88,7 +91,17 @@ public class MeasurementResult extends VerticalLayout {
     }
 
     private void save() {
-        this.bean.setName(name.getValue());
+        
+        if(name.getValue()==null || "".equals(name.getValue().trim())) {
+            String err = "Zadejte název záznamu pro uložení";
+            name.setComponentError(new UserError(err, ContentMode.TEXT, ErrorLevel.ERROR));
+            Notification.show(err, Notification.Type.ERROR_MESSAGE);
+            return;
+        } else {
+            name.setComponentError(null);
+        }
+        
+        this.bean.setName(name.getValue().trim());
 
         List<Measurement> duplicity = ccService.findByNameEquals(bean.getName());
         Integer idOverwrite = null;
