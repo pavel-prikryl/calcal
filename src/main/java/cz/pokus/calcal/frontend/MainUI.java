@@ -12,7 +12,8 @@ import com.vaadin.ui.UI;
 
 import cz.pokus.calcal.frontend.view.CalcView;
 
-@Theme("valo")
+//@Theme("valo")
+@Theme("tests-valo-dark")
 @SpringUI
 public class MainUI extends UI {
 
