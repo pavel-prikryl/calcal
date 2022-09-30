@@ -25,14 +25,14 @@ https://bruxy.regnet.cz/web/fitness/CZ/vypocet-bazalniho-metabolismu/
  */
 
 public enum BodyActivity {
-    NONE(0, "Žádná aktivita (Žádný sport ani pohyb)", 1.1),
+    NONE(0, "Žádná aktivita (Žádný sport ani pohyb)", 1.08),
     SITTING(1, "Sedavá aktivita (Sed. zam. a občasná chůze)", 1.2), 
     LIGHT(2, "Lehce aktivní (Pohyb 1x týdně)", 1.3),
     MEDIUM(3, "Středně aktivní (Pohyb 2x týdně)", 1.375), 
     HIGH(4, "Aktivní (Pohyb 3x týdně)", 1.55),
     ABOVE_HIGH(5, "Nadprůměrně aktivní (Pohyb 4x týdně)", 1.65), 
     VERY(6, "Velmi aktivní (Pohyb 5x týdně)",  1.725),
-    EXTREME(7, "Velmi aktivní (Pohyb 6x týdně)", 1.9);
+    EXTREME(7, "Extrémně aktivní (Pohyb 6x týdně)", 1.9);
 
     private final Integer code;
     private final String desc;
